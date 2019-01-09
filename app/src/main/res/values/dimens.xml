@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="item_height">128dp</dimen>
+    <dimen name="padding">16dp</dimen>
+    <dimen name="padding_top">8dp</dimen>
+    <dimen name="item_margin">8dp</dimen>
+    <dimen name="item_margin_4dp">4dp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="dp_64">64dp</dimen>
+    <dimen name="dp_28">28dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
+    <dimen name="dp_24">24dp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_63">63dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_120">120dp</dimen>
+    <dimen name="dp_48">48dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="dp_240">240dp</dimen>
+</resources>

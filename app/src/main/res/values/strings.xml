@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BakingApp</string>
+    <string name="title_activity_recipe">RecipeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="no_connectivity_exception_msg">Please check your network connection</string>
+    <string name="recipe_image">this contain the recipe image</string>
+    <string name="recipe_not_selected">Please select recipe.</string>
+    <string name="step_short_description">Step %1$s \: %2$s </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_media">MediaActivity</string>
+</resources>
