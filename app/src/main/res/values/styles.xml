@@ -17,4 +17,18 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="textTitle">
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:padding">@dimen/dp_4</item>
+        <item name="android:background">@color/title_background</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:layout_height">@dimen/dp_28</item>
+        <item name="android:layout_width">match_parent</item>
+        <!--android:layout_marginTop="@dimen/dp_4"-->
+        <!--android:layout_marginLeft="@dimen/dp_4"-->
+        <!--android:layout_marginStart="@dimen/dp_4"-->
+        <!--android:layout_marginBottom="@dimen/dp_4"-->
+    </style>
+
+    <dimen name="sp_16">16sp</dimen>
 </resources>

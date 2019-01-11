@@ -6,4 +6,5 @@
     <color name="back_trans">#20000000</color>
     <color name="white">#ffffff</color>
     <color name="black">#000</color>
+    <color name="title_background">#E5E5E5</color>
 </resources>

@@ -11,7 +11,8 @@ import javax.inject.Singleton;
 
 @Singleton
 public class RecipeViewModel extends ViewModel {
-
+    public int selectedRecipeId;
+    public int selectedStepIndex;
     private LiveData<Recipe> recipeLiveData;
     private RecipeDao dao;
     private RecipeModel recipeRepo;

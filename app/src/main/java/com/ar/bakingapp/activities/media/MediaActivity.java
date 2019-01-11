@@ -26,7 +26,7 @@ import butterknife.OnClick;
 import static com.ar.bakingapp.activities.recipe.RecipeActivity.RECIPE_ID;
 import static com.ar.bakingapp.activities.recipe.RecipeActivity.SELECTED_POSITION;
 
-public class MediaActivity extends AppCompatActivity implements PlayerFragment.OnFragmentInteractionListener {
+public class MediaActivity extends AppCompatActivity {
 
     Recipe selectedRecipe;
     List<StepsItem> list;
@@ -155,8 +155,4 @@ public class MediaActivity extends AppCompatActivity implements PlayerFragment.O
         setupInfo(list.get(viewModel.selectedPosition));
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        Log.d(TAG, "uri:" + uri);
-    }
 }

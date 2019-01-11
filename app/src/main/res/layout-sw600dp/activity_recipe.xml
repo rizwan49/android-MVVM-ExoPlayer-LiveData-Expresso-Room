@@ -32,17 +32,25 @@
             android:id="@+id/stepFragment"
             android:name="com.ar.bakingapp.fragments.RecipeActivityFragment"
             android:layout_width="300dp"
+            android:layout_margin="@dimen/dp_4"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:layout="@layout/fragment_recipe" />
 
+        <View
+            android:layout_width="@dimen/dp_2"
+            android:layout_height="match_parent"
+            android:background="?actionBarDivider" />
         <fragment
+            android:name="com.ar.bakingapp.fragments.PlayerFragment"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_4"
             android:id="@+id/mediaFragment"
-            android:name="com.ar.bakingapp.fragments.RecipeActivityFragment"
+            android:layout_marginRight="@dimen/dp_4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:layout="@layout/fragment_recipe" />
+            tools:layout="@layout/fragment_player" />
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

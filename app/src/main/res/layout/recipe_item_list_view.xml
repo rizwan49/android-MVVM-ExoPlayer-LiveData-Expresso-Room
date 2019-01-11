@@ -1,6 +1,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="@dimen/dp_4"
     android:foreground="?attr/selectableItemBackground">
 
@@ -14,12 +15,11 @@
     <TextView
         android:id="@+id/recipeName"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_28"
+        android:layout_height="@dimen/dp_32"
         android:layout_gravity="center_horizontal|bottom"
         android:foreground="@color/back_trans"
         android:gravity="center"
-        android:textColor="@color/black"
-        android:text="recipe name"
-        android:textSize="@dimen/sp_18" />
+        android:textSize="@dimen/sp_16"
+        tools:text="recipe name" />
 
 </android.support.v7.widget.CardView>

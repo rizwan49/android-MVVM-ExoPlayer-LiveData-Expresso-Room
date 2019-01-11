@@ -9,10 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.ar.bakingapp.R;
+import com.ar.bakingapp.adapters.IngredientsAdapter;
 import com.ar.bakingapp.adapters.RecipeStepsAdapter;
+import com.ar.bakingapp.network.model.IngredientsItem;
 import com.ar.bakingapp.network.model.StepsItem;
 
 import java.util.List;
@@ -32,6 +33,15 @@ public class RecipeActivityFragment extends Fragment implements RecipeStepsAdapt
     List<StepsItem> list;
     RecipeStepsAdapter adapter;
     LinearLayoutManager layoutManager;
+
+
+    @BindView(R.id.ingredientList)
+    RecyclerView ingredientRecyclerView;
+
+    List<IngredientsItem> ingredientsItems;
+    IngredientsAdapter ingredientsAdapter;
+    LinearLayoutManager ingredientLayoutManager;
+
     private OnFragmentInteractionListener mListener;
 
     public RecipeActivityFragment() {
@@ -42,8 +52,17 @@ public class RecipeActivityFragment extends Fragment implements RecipeStepsAdapt
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
         ButterKnife.bind(this, rootView);
-        bindAdapter();
+        bindStepsAdapter();
+        bindIngredientAdapter();
         return rootView;
+    }
+
+    private void bindIngredientAdapter() {
+        ingredientsAdapter = new IngredientsAdapter(ingredientsItems);
+        ingredientLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        ingredientRecyclerView.setLayoutManager(ingredientLayoutManager);
+        ingredientRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        ingredientRecyclerView.setAdapter(ingredientsAdapter);
     }
 
     @Override
@@ -63,7 +82,7 @@ public class RecipeActivityFragment extends Fragment implements RecipeStepsAdapt
         }
     }
 
-    private void bindAdapter() {
+    private void bindStepsAdapter() {
         adapter = new RecipeStepsAdapter(list, this);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -73,14 +92,14 @@ public class RecipeActivityFragment extends Fragment implements RecipeStepsAdapt
 
     @Override
     public void onListItemClick(StepsItem selectedStep, View view) {
-        Toast.makeText(getContext(), selectedStep.getDescription(), Toast.LENGTH_LONG).show();
         if (mListener != null)
             mListener.onFragmentInteraction(selectedStep.getId());
     }
 
-    public void setListofSteps(List<StepsItem> steps) {
+    public void setListofSteps(List<StepsItem> steps, List<IngredientsItem> ingredientsItems) {
         if (isAdded()) {
             adapter.addAllItem(steps);
+            ingredientsAdapter.addAllItem(ingredientsItems);
         }
     }
 

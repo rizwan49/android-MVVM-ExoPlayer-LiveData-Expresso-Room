@@ -1,11 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/stepsList"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.RecipeActivityFragment"
-    tools:showIn="@layout/activity_recipe">
+    android:layout_height="wrap_content">
 
-</android.support.v7.widget.RecyclerView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/textTitle"
+            android:text="@string/ingredient_title" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8" />
+
+        <android.support.v7.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/ingredientList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".fragments.RecipeActivityFragment"
+            tools:showIn="@layout/activity_recipe" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8" />
+        <!--for steps view-->
+        <TextView
+            style="@style/textTitle"
+            android:text="@string/recipe_title" />
+
+        <android.support.v7.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/stepsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".fragments.RecipeActivityFragment"
+            tools:showIn="@layout/activity_recipe" />
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

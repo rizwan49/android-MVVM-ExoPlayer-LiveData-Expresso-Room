@@ -10,8 +10,8 @@ import android.widget.Toast;
 
 import com.ar.bakingapp.R;
 import com.ar.bakingapp.activities.media.MediaActivity;
+import com.ar.bakingapp.fragments.PlayerFragment;
 import com.ar.bakingapp.fragments.RecipeActivityFragment;
-import com.ar.bakingapp.network.model.Recipe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,11 +23,10 @@ public class RecipeActivity extends AppCompatActivity implements RecipeActivityF
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    int selectedRecipeId;
-    RecipeViewModel viewModel;
-    Recipe selectedRecipe;
-
-    RecipeActivityFragment stepFragment;
+    boolean isTowPaneLayout;
+    private RecipeViewModel viewModel;
+    private RecipeActivityFragment stepFragment;
+    private PlayerFragment mediaFragment;
 
     public static void startRecipeActivity(Context context, int id) {
         Intent intent = new Intent(context, RecipeActivity.class);
@@ -42,8 +41,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipeActivityF
         ButterKnife.bind(this);
 
         viewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
-        selectedRecipeId = getIntent().getIntExtra(RECIPE_ID, -1);
-        if (selectedRecipeId == -1) {
+        viewModel.selectedRecipeId = getIntent().getIntExtra(RECIPE_ID, -1);
+        if (viewModel.selectedRecipeId == -1) {
             doFinish();
             return;
         }
@@ -54,8 +53,14 @@ public class RecipeActivity extends AppCompatActivity implements RecipeActivityF
     }
 
     private void init() {
-        viewModel.init(selectedRecipeId);
+        if (findViewById(R.id.twoPaneLayout) != null)
+            isTowPaneLayout = true;
+        viewModel.init(viewModel.selectedRecipeId);
         stepFragment = (RecipeActivityFragment) getSupportFragmentManager().findFragmentById(R.id.stepFragment);
+
+        if (isTowPaneLayout) {
+            mediaFragment = (PlayerFragment) getSupportFragmentManager().findFragmentById(R.id.mediaFragment);
+        }
     }
 
     private void doFinish() {
@@ -71,8 +76,11 @@ public class RecipeActivity extends AppCompatActivity implements RecipeActivityF
             }
 
             setupToolbar(recipe.getName());
-            stepFragment.setListofSteps(recipe.getSteps());
-            // FIXME: 06/01/19 add fra
+            stepFragment.setListofSteps(recipe.getSteps(), recipe.getIngredients());
+            if (isTowPaneLayout) {
+                mediaFragment.setStepInfo(recipe.getSteps().get(viewModel.selectedStepIndex));
+                mediaFragment.setMediaViewPortion(0.8f);
+            }
         });
     }
 
@@ -88,6 +96,10 @@ public class RecipeActivity extends AppCompatActivity implements RecipeActivityF
 
     @Override
     public void onFragmentInteraction(int position) {
-        MediaActivity.startMediaActivity(this, selectedRecipeId, position);
+        viewModel.selectedStepIndex = position;
+        if (isTowPaneLayout)
+            mediaFragment.setStepInfo(viewModel.getRecipes().getValue().getSteps().get(viewModel.selectedStepIndex));
+        else
+            MediaActivity.startMediaActivity(this, viewModel.selectedRecipeId, position);
     }
 }
