@@ -5,12 +5,15 @@ import android.arch.lifecycle.ViewModel;
 
 import com.ar.bakingapp.database.DataBaseHelper;
 import com.ar.bakingapp.database.RecipeDao;
+import com.ar.bakingapp.fragments.PlayerFragment;
 import com.ar.bakingapp.network.model.Recipe;
 import com.ar.bakingapp.network.model.StepsItem;
 
 import java.util.List;
 
 public class MediaViewModel extends ViewModel {
+    public int selectedRecipeId;
+    public int selectedPosition;
     private LiveData<Recipe> recipeLiveData;
     private RecipeDao dao;
     private MediaModel mediaRepo;

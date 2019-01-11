@@ -3,11 +3,13 @@ package com.ar.bakingapp.activities.media;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.ar.bakingapp.R;
@@ -19,21 +21,28 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.ar.bakingapp.activities.recipe.RecipeActivity.RECIPE_ID;
 import static com.ar.bakingapp.activities.recipe.RecipeActivity.SELECTED_POSITION;
 
 public class MediaActivity extends AppCompatActivity implements PlayerFragment.OnFragmentInteractionListener {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     Recipe selectedRecipe;
     List<StepsItem> list;
     PlayerFragment mediaPlayerFragment;
     private MediaViewModel viewModel;
-    private int selectedRecipeId;
-    private int selectedPosition;
     private String TAG = MediaActivity.class.getName();
+
+    @BindView(R.id.btnNext)
+    Button btnNext;
+
+    @BindView(R.id.btnPrev)
+    Button btnPrev;
+
+
+    @BindView(R.id.viewBottom)
+    View bottomView;
 
     public static void startMediaActivity(Context context, int id, int position) {
         Intent intent = new Intent(context, MediaActivity.class);
@@ -45,13 +54,15 @@ public class MediaActivity extends AppCompatActivity implements PlayerFragment.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_media);
+        setContentView(R.layout.media_fragment);
         ButterKnife.bind(this);
 
         viewModel = ViewModelProviders.of(this).get(MediaViewModel.class);
-        selectedRecipeId = getIntent().getIntExtra(RECIPE_ID, -1);
-        selectedPosition = getIntent().getIntExtra(SELECTED_POSITION, -1);
-        if (selectedRecipeId == -1 || selectedPosition == -1) {
+        if (viewModel.selectedPosition == 0) {
+            viewModel.selectedRecipeId = getIntent().getIntExtra(RECIPE_ID, -1);
+            viewModel.selectedPosition = getIntent().getIntExtra(SELECTED_POSITION, -1);
+        }
+        if (viewModel.selectedRecipeId == -1 || viewModel.selectedPosition == -1) {
             doFinish();
             return;
         }
@@ -62,8 +73,36 @@ public class MediaActivity extends AppCompatActivity implements PlayerFragment.O
 
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            hideSystemUiFullScreen();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            showSystemUiPortrait();
+        }
+    }
+
+    private void showSystemUiPortrait() {
+        bottomView.setVisibility(View.VISIBLE);
+        getSupportActionBar().show();
+        mediaPlayerFragment.showView();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    private void hideSystemUiFullScreen() {
+        bottomView.setVisibility(View.GONE);
+        getSupportActionBar().hide();
+        mediaPlayerFragment.hideView();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
     private void init() {
-        viewModel.init(selectedRecipeId);
+        viewModel.init(viewModel.selectedRecipeId);
         mediaPlayerFragment = (PlayerFragment) getSupportFragmentManager().findFragmentById(R.id.mediaFragment);
     }
 
@@ -75,25 +114,45 @@ public class MediaActivity extends AppCompatActivity implements PlayerFragment.O
             }
             selectedRecipe = recipe;
             list = recipe.getSteps();
-            setupToolbar(list.get(selectedPosition).getShortDescription() + "");
-            mediaPlayerFragment.setListofSteps(list, selectedPosition);
-            // FIXME: 06/01/19 add fra
+            setupInfo(list.get(viewModel.selectedPosition));
         });
     }
 
+    private void setupInfo(StepsItem item) {
+        setupToolbar(item.getShortDescription() + "");
+        mediaPlayerFragment.setStepInfo(item);
+    }
     private void doFinish() {
         Toast.makeText(this, getString(R.string.recipe_not_selected), Toast.LENGTH_LONG).show();
         finish();
     }
 
     private void setupToolbar(String recipeName) {
-        toolbar.setTitle(recipeName);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(recipeName);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
 
-        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
+    @OnClick(R.id.btnPrev)
+    public void doPrev() {
+        viewModel.selectedPosition--;
+        if (viewModel.selectedPosition < 0) {
+            viewModel.selectedPosition++;
+            return;
+        }
+        setupInfo(list.get(viewModel.selectedPosition));
+    }
+
+    @OnClick(R.id.btnNext)
+    public void doNext() {
+        viewModel.selectedPosition++;
+        if (viewModel.selectedPosition >= list.size()) {
+            viewModel.selectedPosition--;
+            return;
+        }
+        setupInfo(list.get(viewModel.selectedPosition));
     }
 
     @Override

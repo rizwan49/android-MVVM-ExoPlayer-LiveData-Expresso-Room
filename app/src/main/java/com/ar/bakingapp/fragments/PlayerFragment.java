@@ -4,13 +4,17 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.constraint.Guideline;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.ar.bakingapp.R;
 import com.ar.bakingapp.network.model.StepsItem;
@@ -32,8 +36,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -53,7 +55,6 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = PlayerFragment.class.getName();
     private static MediaSessionCompat mMediaSession;
-    List<StepsItem> itemList;
     View rootView;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -64,6 +65,16 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     @BindView(R.id.playerView)
     SimpleExoPlayerView mPlayerView;
     private PlaybackStateCompat.Builder mStateBuilder;
+
+    @BindView(R.id.tvStepsValue)
+    TextView tvStepValue;
+
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+
+    Guideline guideline;
+    MediaSessionCompat.Token token;
+
 
     public PlayerFragment() {
         // Required empty public constructor
@@ -95,12 +106,20 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+    private StepsItem selectedObj;
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable("session", mMediaSession.getSessionToken());
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+        if (savedInstanceState != null)
+            token = savedInstanceState.getParcelable("session");
         rootView = inflater.inflate(R.layout.fragment_player, container, false);
         ButterKnife.bind(this, rootView);
         init();
@@ -108,6 +127,7 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     }
 
     private void init() {
+        guideline = rootView.findViewById(R.id.horizontalHalf);
         mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource
                 (getResources(), R.drawable.question_mark));
         initializeMediaSession();
@@ -128,8 +148,7 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
         // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
         mStateBuilder = new PlaybackStateCompat.Builder()
                 .setActions(
-                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                                PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
+
                                 PlaybackStateCompat.ACTION_SEEK_TO |
                                 PlaybackStateCompat.ACTION_PLAY_PAUSE);
 
@@ -143,7 +162,6 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
         mMediaSession.setActive(true);
 
     }
-
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -184,13 +202,16 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
         mMediaSession.setActive(false);
     }
 
-    public void setListofSteps(List<StepsItem> list, int selectedPosition) {
-        itemList = list;
-        this.selectedPosition = selectedPosition;
-        Toast.makeText(getContext(), itemList.get(this.selectedPosition).getShortDescription(), Toast.LENGTH_LONG).show();
+    public void setStepInfo(StepsItem step) {
+        if (step == null) return;
+        selectedObj = step;
+        //Toast.makeText(getContext(), step.getShortDescription(), Toast.LENGTH_LONG).show();
 
-        if (itemList.get(selectedPosition).getThumbnailURL() != null)
-            initializePlayer(Uri.parse(itemList.get(selectedPosition).getVideoURL()));
+        if (step.getVideoURL() != null)
+            initializePlayer(Uri.parse(step.getVideoURL()));
+        if (!TextUtils.isEmpty(step.getDescription())) {
+            tvStepValue.setText(step.getDescription());
+        }
     }
 
     /**
@@ -208,14 +229,17 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
 
             // Set the ExoPlayer.EventListener to this activity.
             mExoPlayer.addListener(this);
-
             // Prepare the MediaSource.
-            String userAgent = Util.getUserAgent(getContext(), itemList.get(selectedPosition).getShortDescription());
-            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-                    getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
-            mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(false);
         }
+        setupVideo(mediaUri);
+    }
+
+    private void setupVideo(Uri mediaUri) {
+        String userAgent = Util.getUserAgent(getContext(), selectedObj.getShortDescription());
+        MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
+                getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
+        mExoPlayer.prepare(mediaSource);
+        mExoPlayer.setPlayWhenReady(true);
     }
 
     @Override
@@ -258,6 +282,18 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    public void hideView() {
+        guideline.setVisibility(View.GONE);
+        scrollView.setVisibility(View.GONE);
+        guideline.setGuidelinePercent(1);
+    }
+
+    public void showView() {
+        guideline.setVisibility(View.VISIBLE);
+        scrollView.setVisibility(View.VISIBLE);
+        guideline.setGuidelinePercent(0.4f);
     }
 
     /**

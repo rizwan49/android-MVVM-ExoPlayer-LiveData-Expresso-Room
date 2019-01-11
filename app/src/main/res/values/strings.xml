@@ -10,4 +10,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_media">MediaActivity</string>
+    <string name="prev">Previous</string>
+    <string name="next">Next</string>
+    <string name="recipe_step_title">Recipe Steps</string>
 </resources>

@@ -5,8 +5,10 @@ import android.arch.persistence.room.Entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 @Entity
-public class StepsItem {
+public class StepsItem implements Serializable {
 
     @ColumnInfo(name = "video_url")
     @SerializedName("videoURL")

@@ -19,4 +19,6 @@
     <dimen name="dp_48">48dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="dp_240">240dp</dimen>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="sp_14">14sp</dimen>
 </resources>
