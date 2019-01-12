@@ -17,6 +17,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ar.bakingapp.R;
+import com.ar.bakingapp.activities.home.HomeActivity;
 import com.ar.bakingapp.network.model.StepsItem;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -229,6 +230,7 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
                 getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
         mExoPlayer.prepare(mediaSource);
         mExoPlayer.setPlayWhenReady(true);
+        HomeActivity.mIdlingResource.setIdleState(true);
     }
 
     @Override

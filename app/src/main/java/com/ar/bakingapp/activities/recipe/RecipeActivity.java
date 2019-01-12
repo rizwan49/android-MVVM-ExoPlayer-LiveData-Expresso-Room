@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.ar.bakingapp.R;
+import com.ar.bakingapp.activities.home.HomeActivity;
 import com.ar.bakingapp.activities.media.MediaActivity;
 import com.ar.bakingapp.fragments.PlayerFragment;
 import com.ar.bakingapp.fragments.RecipeActivityFragment;
@@ -30,7 +31,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeActivityF
     private PlayerFragment mediaFragment;
 
     public static void startRecipeActivity(Context context, int id) {
-        UpdateBakingService.startBakingService(context,id);
+        UpdateBakingService.startBakingService(context, id);
         Intent intent = new Intent(context, RecipeActivity.class);
         intent.putExtra(RECIPE_ID, id);
         context.startActivity(intent);
@@ -41,7 +42,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipeActivityF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
         ButterKnife.bind(this);
-
+        HomeActivity.getIdlingResource();
+        HomeActivity.mIdlingResource.setIdleState(false);
         viewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         viewModel.selectedRecipeId = getIntent().getIntExtra(RECIPE_ID, -1);
         if (viewModel.selectedRecipeId == -1) {
@@ -83,6 +85,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeActivityF
                 mediaFragment.setStepInfo(recipe.getSteps().get(viewModel.selectedStepIndex));
                 mediaFragment.setMediaViewPortion(0.8f);
             }
+            HomeActivity.mIdlingResource.setIdleState(true);
         });
     }
 

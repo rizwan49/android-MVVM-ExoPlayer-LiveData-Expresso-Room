@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ar.bakingapp.R;
+import com.ar.bakingapp.activities.home.HomeActivity;
 import com.ar.bakingapp.fragments.PlayerFragment;
 import com.ar.bakingapp.network.model.Recipe;
 import com.ar.bakingapp.network.model.StepsItem;
@@ -51,7 +52,8 @@ public class MediaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.media_fragment);
         ButterKnife.bind(this);
-
+        HomeActivity.getIdlingResource();
+        HomeActivity.mIdlingResource.setIdleState(false);
         viewModel = ViewModelProviders.of(this).get(MediaViewModel.class);
         if (viewModel.selectedPosition == 0) {
             viewModel.selectedRecipeId = getIntent().getIntExtra(RECIPE_ID, -1);
@@ -159,6 +161,7 @@ public class MediaActivity extends AppCompatActivity {
             viewModel.selectedPosition--;
             return;
         }
+        HomeActivity.mIdlingResource.setIdleState(false);
         setupInfo(list.get(viewModel.selectedPosition));
     }
 

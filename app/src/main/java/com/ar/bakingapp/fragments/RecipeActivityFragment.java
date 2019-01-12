@@ -103,9 +103,13 @@ public class RecipeActivityFragment extends Fragment implements RecipeStepsAdapt
         }
     }
 
+    @Override
+    public void onDestroy() {
+        mListener = null;
+        super.onDestroy();
+    }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(int position);
     }
 }
