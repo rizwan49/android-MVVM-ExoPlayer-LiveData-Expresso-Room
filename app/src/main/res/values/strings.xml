@@ -8,7 +8,6 @@
     <string name="step_short_description">Step %1$s \: %2$s </string>
 
     <string name="ingredient_summery"> %1$s %2$s of %3$s</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_media">MediaActivity</string>
     <string name="prev">Previous</string>
@@ -16,4 +15,6 @@
     <string name="recipe_step_title">Recipe Steps</string>
     <string name="ingredient_title">Ingredients</string>
     <string name="recipe_title">Recipes</string>
+
+    <string name="appwidget_text">&quot;BAKING APP&quot; \n No Ingredient selected yet! </string>
 </resources>

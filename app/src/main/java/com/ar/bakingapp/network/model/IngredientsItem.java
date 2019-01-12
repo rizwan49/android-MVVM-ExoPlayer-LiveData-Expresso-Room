@@ -4,8 +4,10 @@ import android.arch.persistence.room.Entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 @Entity
-public class IngredientsItem{
+public class IngredientsItem implements Serializable{
 
 	@SerializedName("quantity")
 	private float quantity;

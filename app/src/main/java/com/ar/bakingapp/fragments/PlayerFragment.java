@@ -56,24 +56,21 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     private static final String TAG = PlayerFragment.class.getName();
     private static MediaSessionCompat mMediaSession;
     View rootView;
+    @BindView(R.id.playerView)
+    SimpleExoPlayerView mPlayerView;
+    @BindView(R.id.tvStepsValue)
+    TextView tvStepValue;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+    Guideline guideline;
+    MediaSessionCompat.Token token;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private int selectedPosition;
     private SimpleExoPlayer mExoPlayer;
-    @BindView(R.id.playerView)
-    SimpleExoPlayerView mPlayerView;
     private PlaybackStateCompat.Builder mStateBuilder;
-
-    @BindView(R.id.tvStepsValue)
-    TextView tvStepValue;
-
-    @BindView(R.id.scrollView)
-    ScrollView scrollView;
-
-    Guideline guideline;
-    MediaSessionCompat.Token token;
-
+    private StepsItem selectedObj;
 
     public PlayerFragment() {
         // Required empty public constructor
@@ -105,7 +102,6 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    private StepsItem selectedObj;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -123,6 +119,13 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
         ButterKnife.bind(this, rootView);
         init();
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mExoPlayer != null && !mExoPlayer.getPlayWhenReady())
+            mExoPlayer.setPlayWhenReady(true);
     }
 
     private void init() {
@@ -148,7 +151,7 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
         mStateBuilder = new PlaybackStateCompat.Builder()
                 .setActions(
 
-                                PlaybackStateCompat.ACTION_SEEK_TO |
+                        PlaybackStateCompat.ACTION_SEEK_TO |
                                 PlaybackStateCompat.ACTION_PLAY_PAUSE);
 
         mMediaSession.setPlaybackState(mStateBuilder.build());
@@ -267,6 +270,8 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
 
     @Override
     public void onPause() {
+        if (mExoPlayer != null && mExoPlayer.getPlayWhenReady())
+            mExoPlayer.setPlayWhenReady(false);
         super.onPause();
     }
 

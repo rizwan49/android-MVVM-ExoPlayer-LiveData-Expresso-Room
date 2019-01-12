@@ -30,4 +30,7 @@ public interface RecipeDao {
     @Query("SELECT * FROM recipe where id=:recipeId")
     LiveData<Recipe> getRecipeDetail(int recipeId);
 
+    @Query("SELECT * FROM recipe where id=:recipeId")
+    Recipe getRecipeDetailNoLiveData(int recipeId);
+
 }

@@ -4,10 +4,9 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -31,18 +30,14 @@ public class MediaActivity extends AppCompatActivity {
     Recipe selectedRecipe;
     List<StepsItem> list;
     PlayerFragment mediaPlayerFragment;
-    private MediaViewModel viewModel;
-    private String TAG = MediaActivity.class.getName();
-
     @BindView(R.id.btnNext)
     Button btnNext;
-
     @BindView(R.id.btnPrev)
     Button btnPrev;
-
-
     @BindView(R.id.viewBottom)
     View bottomView;
+    private MediaViewModel viewModel;
+    private String TAG = MediaActivity.class.getName();
 
     public static void startMediaActivity(Context context, int id, int position) {
         Intent intent = new Intent(context, MediaActivity.class);
@@ -71,6 +66,17 @@ public class MediaActivity extends AppCompatActivity {
         setupObserver();
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                supportFinishAfterTransition();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -115,13 +121,14 @@ public class MediaActivity extends AppCompatActivity {
             selectedRecipe = recipe;
             list = recipe.getSteps();
             setupInfo(list.get(viewModel.selectedPosition));
+            setupToolbar(recipe.getName());
         });
     }
 
     private void setupInfo(StepsItem item) {
-        setupToolbar(item.getShortDescription() + "");
         mediaPlayerFragment.setStepInfo(item);
     }
+
     private void doFinish() {
         Toast.makeText(this, getString(R.string.recipe_not_selected), Toast.LENGTH_LONG).show();
         finish();

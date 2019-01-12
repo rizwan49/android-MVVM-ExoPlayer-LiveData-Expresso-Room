@@ -12,6 +12,7 @@ import com.ar.bakingapp.R;
 import com.ar.bakingapp.activities.media.MediaActivity;
 import com.ar.bakingapp.fragments.PlayerFragment;
 import com.ar.bakingapp.fragments.RecipeActivityFragment;
+import com.ar.bakingapp.widget.UpdateBakingService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +30,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeActivityF
     private PlayerFragment mediaFragment;
 
     public static void startRecipeActivity(Context context, int id) {
+        UpdateBakingService.startBakingService(context,id);
         Intent intent = new Intent(context, RecipeActivity.class);
         intent.putExtra(RECIPE_ID, id);
         context.startActivity(intent);
