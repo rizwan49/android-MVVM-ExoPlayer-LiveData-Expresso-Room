@@ -61,7 +61,6 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     @BindView(R.id.scrollView)
     ScrollView scrollView;
     Guideline guideline;
-    MediaSessionCompat.Token token;
 
     private int selectedStepId;
     private boolean playBackState;
@@ -78,11 +77,14 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        selectedStepId = selectedObj.getId();
-        outState.putParcelable("session", mMediaSession.getSessionToken());
-        outState.putInt(SELECTED_STEP_ID, selectedStepId);
-        outState.putBoolean(PLAYBACK_STATE, mExoPlayer.getPlayWhenReady());
-        outState.putLong(MEDIA_POSITION, mExoPlayer.getCurrentPosition());
+        if (selectedObj != null) {
+            selectedStepId = selectedObj.getId();
+            outState.putInt(SELECTED_STEP_ID, selectedStepId);
+        }
+        if (mExoPlayer != null) {
+            outState.putBoolean(PLAYBACK_STATE, mExoPlayer.getPlayWhenReady());
+            outState.putLong(MEDIA_POSITION, mExoPlayer.getCurrentPosition());
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -91,7 +93,6 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
                              Bundle state) {
         // Inflate the layout for this fragment
         if (state != null) {
-            token = state.getParcelable("session");
             selectedStepId = state.getInt(SELECTED_STEP_ID);
             playBackState = state.getBoolean(PLAYBACK_STATE, true);
             mediaPosition = state.getLong(MEDIA_POSITION);
