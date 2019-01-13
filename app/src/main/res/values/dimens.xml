@@ -25,4 +25,5 @@
     <dimen name="dp_36">36dp</dimen>
     <dimen name="dp_32">32dp</dimen>
     <dimen name="sp_20">20sp</dimen>
+    <dimen name="dp_100">100dp</dimen>
 </resources>

@@ -63,7 +63,7 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     Guideline guideline;
 
     private int selectedStepId;
-    private boolean playBackState;
+    private boolean playBackState = true;
     private long mediaPosition;
 
     private SimpleExoPlayer mExoPlayer;
@@ -104,12 +104,6 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
         return rootView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mExoPlayer != null && !mExoPlayer.getPlayWhenReady())
-            mExoPlayer.setPlayWhenReady(true);
-    }
 
     private void init() {
         guideline = rootView.findViewById(R.id.horizontalHalf);
@@ -167,16 +161,6 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
             mMediaSession.setActive(false);
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroy() {
-        releasePlayer();
-        super.onDestroy();
-    }
 
     public void setStepInfo(StepsItem step) {
         if (step == null) return;
@@ -269,8 +253,6 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     @Override
     public void onPause() {
         super.onPause();
-        if (mExoPlayer != null && mExoPlayer.getPlayWhenReady())
-            mExoPlayer.setPlayWhenReady(false);
         if (Util.SDK_INT <= 23) {
             releasePlayer();
         }

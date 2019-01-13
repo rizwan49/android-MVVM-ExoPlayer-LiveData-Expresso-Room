@@ -7,4 +7,5 @@
     <color name="white">#ffffff</color>
     <color name="black">#000</color>
     <color name="title_background">#E5E5E5</color>
+    <color name="btn_exo_color">#CC000000</color>
 </resources>
