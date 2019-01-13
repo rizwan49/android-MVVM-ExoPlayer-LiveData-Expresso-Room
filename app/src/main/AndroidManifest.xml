@@ -25,8 +25,8 @@
             android:name=".activities.recipe.RecipeActivity"
             android:label="@string/title_activity_recipe"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode"
             android:name=".activities.media.MediaActivity"
             android:label="@string/title_activity_media" />
 

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,17 +45,13 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link PlayerFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PlayerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class PlayerFragment extends Fragment implements ExoPlayer.EventListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private static final String TAG = PlayerFragment.class.getName();
+    private static final String SELECTED_STEP_ID = "step_id";
+    private static final String PLAYBACK_STATE = "playback_state";
+    private static final String MEDIA_POSITION = "media_position";
     private static MediaSessionCompat mMediaSession;
     View rootView;
     @BindView(R.id.playerView)
@@ -65,57 +62,41 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     ScrollView scrollView;
     Guideline guideline;
     MediaSessionCompat.Token token;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private int selectedPosition;
+
+    private int selectedStepId;
+    private boolean playBackState;
+    private long mediaPosition;
+
     private SimpleExoPlayer mExoPlayer;
     private PlaybackStateCompat.Builder mStateBuilder;
     private StepsItem selectedObj;
+
 
     public PlayerFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PlayerFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PlayerFragment newInstance(String param1, String param2) {
-        PlayerFragment fragment = new PlayerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        selectedStepId = selectedObj.getId();
         outState.putParcelable("session", mMediaSession.getSessionToken());
+        outState.putInt(SELECTED_STEP_ID, selectedStepId);
+        outState.putBoolean(PLAYBACK_STATE, mExoPlayer.getPlayWhenReady());
+        outState.putLong(MEDIA_POSITION, mExoPlayer.getCurrentPosition());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle state) {
         // Inflate the layout for this fragment
-        if (savedInstanceState != null)
-            token = savedInstanceState.getParcelable("session");
+        if (state != null) {
+            token = state.getParcelable("session");
+            selectedStepId = state.getInt(SELECTED_STEP_ID);
+            playBackState = state.getBoolean(PLAYBACK_STATE, true);
+            mediaPosition = state.getLong(MEDIA_POSITION);
+            Log.d(TAG, "mediaPos:" + mediaPosition + " SelectedId:" + selectedStepId + " MediaState:" + playBackState);
+        }
         rootView = inflater.inflate(R.layout.fragment_player, container, false);
         ButterKnife.bind(this, rootView);
         init();
@@ -176,9 +157,13 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
      * Release ExoPlayer.
      */
     private void releasePlayer() {
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
+        if (mExoPlayer != null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
+        if (mMediaSession != null)
+            mMediaSession.setActive(false);
     }
 
     @Override
@@ -188,17 +173,19 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         releasePlayer();
-        mMediaSession.setActive(false);
+        super.onDestroy();
     }
 
     public void setStepInfo(StepsItem step) {
         if (step == null) return;
         selectedObj = step;
 
-        if (step.getVideoURL() != null)
+        if (!TextUtils.isEmpty(step.getVideoURL())) {
             initializePlayer(Uri.parse(step.getVideoURL()));
+        } else if (step.getThumbnailURL() != null) {
+            initializePlayer(Uri.parse(step.getThumbnailURL()));
+        }
         if (!TextUtils.isEmpty(step.getDescription())) {
             tvStepValue.setText(step.getDescription());
         }
@@ -225,11 +212,19 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
     }
 
     private void setupVideo(Uri mediaUri) {
+        if (mediaUri != null && !TextUtils.isEmpty(mediaUri.toString()))
+            mPlayerView.setUseController(true);
+        else
+            mPlayerView.setUseController(false);
         String userAgent = Util.getUserAgent(getContext(), selectedObj.getShortDescription());
         MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                 getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
         mExoPlayer.prepare(mediaSource);
-        mExoPlayer.setPlayWhenReady(true);
+        if (selectedObj.getId() == selectedStepId) {
+            mExoPlayer.seekTo(mediaPosition);
+            mExoPlayer.setPlayWhenReady(playBackState);
+        } else
+            mExoPlayer.setPlayWhenReady(true);
         HomeActivity.mIdlingResource.setIdleState(true);
     }
 
@@ -272,9 +267,20 @@ public class PlayerFragment extends Fragment implements ExoPlayer.EventListener 
 
     @Override
     public void onPause() {
+        super.onPause();
         if (mExoPlayer != null && mExoPlayer.getPlayWhenReady())
             mExoPlayer.setPlayWhenReady(false);
-        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
+        }
     }
 
     public void hideView() {

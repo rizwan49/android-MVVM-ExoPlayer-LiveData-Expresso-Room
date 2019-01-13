@@ -67,7 +67,7 @@ public class MediaActivity extends AppCompatActivity {
         init();
         setupObserver();
 
-
+        onConfigurationChanged(getResources().getConfiguration().orientation);
     }
 
     @Override
@@ -81,14 +81,12 @@ public class MediaActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
 
+    public void onConfigurationChanged(int orientation) {
         // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideSystemUiFullScreen();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             showSystemUiPortrait();
         }
     }
