@@ -17,7 +17,6 @@
         app:resize_mode="fixed_height"
         app:fastforward_increment="1000"
         app:rewind_increment="1000"
-        app:controller_layout_id="@layout/custom_control"
         android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/horizontalHalf"
