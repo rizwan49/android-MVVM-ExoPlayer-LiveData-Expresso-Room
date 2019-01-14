@@ -10,6 +10,11 @@ This app contain list of recipes with detail , you can watch video and it has re
 - App should display recipes from provided network resource.
 - App uses RecyclerView and can handle recipe steps that include videos or images.
 
+![MainActivity](https://github.com/rizwan49/BakingApp/blob/master/app_assests/home_screen.png)
+
+![RecipeDetailActivity](https://github.com/rizwan49/BakingApp/blob/master/app_assests/recipe_datail.png)
+
+
 ## Components and Libraries
 - Application uses Master Detail Flow to display recipe steps and navigation between them.
 - Application uses Exoplayer to display videos.
@@ -18,9 +23,13 @@ This app contain list of recipes with detail , you can watch video and it has re
 - Application makes use of Espresso to test aspects of the UI.
 - Application sensibly utilizes a third-party library to enhance the app's features. That could be helper library to interface with ContentProviders if you choose to store the recipes, a UI binding library to avoid writing findViewById a bunch of times, or something similar.
 
+![Master Detail Flow](https://github.com/rizwan49/BakingApp/blob/master/app_assests/recipe_detail_tablet.png)
+
 ## Homescreen Widget
 - Application has a companion homescreen widget.
 - Widget displays ingredient list for desired recipe.
+
+![Widget Selected Recipe as List](https://github.com/rizwan49/BakingApp/blob/master/app_assests/home_widget_last_selected_recipe_list.png)
 
 ## What you will learn
 1. Activity, Fragment , Responsive Screen (Tablet)
