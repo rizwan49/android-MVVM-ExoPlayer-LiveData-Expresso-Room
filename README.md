@@ -24,13 +24,16 @@ This app contain list of recipes with detail , you can watch video and it has re
 
 ## What you will learn
 1. Activity, Fragment , Responsive Screen (Tablet)
-2. MVVM pattern (Android JetPack)
+2. MVVM pattern (Android JetPack using Room Persistance)
 3. Retrofit (Network call)
 4. Room Persistense 
 5. LiveData
 6. ExoPlayer for video streaming
 7. Rotation of screen (Fragment Saved Instanse state)
-8. interprocess communication (Activity ->Fragment, Fragment ->Activity and A_Fragment->Activity->B_Fragment )
+8. Interprocess communication (Activity ->Fragment, Fragment ->Activity and A_Fragment->Activity->B_Fragment )
 9. UI test (Espresso)
 10. Backend Service
 11. Widget Provider (Transfet list of ingredients to Home Widget)
+12. ButterKnife
+13. Picasso 
+14. Stetho for debugging 
