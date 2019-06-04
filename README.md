@@ -1,4 +1,4 @@
-# BakingApp
+# BakingApp - example
 This app contain list of recipes with detail , you can watch video and it has responsive view along with Widget which include recipe as list in HomeScreen
 
 ## Common Project Requirements
